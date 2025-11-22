@@ -1,87 +1,289 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Replit GoogleTest Auto-Setup | One-Click Installer</title>
+  <title>Replit Google Test Auto-Setup</title>
+  <meta name="description" content="One-click Google Test (GTest) auto-setup for Replit C++. Fully automated CMake + GoogleTest configuration with a menu-based runner and cleanup script." />
+  <meta name="keywords" content="Replit, Google Test, GTest, C++, unit testing, CMake, Replit GTest setup, automated test setup" />
+  <meta name="author" content="CodeWithSouma" />
 
-  <!-- SEO -->
-  <meta name="description" content="Install GoogleTest in Replit with a single command. Fully automated setup with CMake, run menus, and test runner.">
-  <meta name="keywords" content="Replit gtest, Replit GoogleTest, C++ testing, cmake replit, gtest installer, replit cpp project, replit automation">
-  <meta name="author" content="CodeWithSouma">
+  <!-- Tailwind Config + CDN -->
+  <script>
+    tailwind = {
+      config: {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#fff7ed',
+                100: '#ffedd5',
+                500: '#f97316',
+                600: '#ea580c',
+                700: '#c2410c'
+              }
+            },
+            boxShadow: {
+              glass: '0 18px 45px rgba(15,23,42,0.65)',
+            },
+            backdropBlur: {
+              xs: '2px'
+            },
+            keyframes: {
+              float: {
+                '0%,100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-20px)' }
+              },
+              fadeInUp: {
+                '0%': { opacity: 0, transform: 'translateY(20px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' }
+              },
+              glow: {
+                '0%,100%': { opacity: 0.45 },
+                '50%': { opacity: 0.9 }
+              }
+            },
+            animation: {
+              float: 'float 10s ease-in-out infinite',
+              floatSlow: 'float 18s ease-in-out infinite',
+              fadeInUp: 'fadeInUp 0.7s ease-out forwards',
+              glow: 'glow 6s ease-in-out infinite'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <link rel="stylesheet" href="style.css" />
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body>
 
-  <!-- Header -->
-  <header class="hero">
-    <img src="banner.png" class="hero-img" alt="Replit GTest Installer Banner" />
-    <h1>Replit GoogleTest Auto-Setup</h1>
-    <p>The EASIEST one-click GoogleTest installer for Replit C++ 🚀</p>
+<body class="bg-slate-950 text-slate-100 relative overflow-x-hidden">
 
-    <div class="cta-buttons">
-      <a href="#install" class="btn primary">Install Now</a>
-      <a href="https://github.com/CodeWithSouma/replit-gtest-setup" target="_blank" class="btn secondary">View on GitHub</a>
+  <!-- Floating Glowing Blobs -->
+  <div class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-40 -left-32 w-72 h-72 bg-brand-600 rounded-full blur-3xl opacity-40 animate-float"></div>
+    <div class="absolute -bottom-40 -right-20 w-80 h-80 bg-purple-600 rounded-full blur-3xl opacity-40 animate-floatSlow"></div>
+    <div class="absolute top-1/2 left-1/3 w-40 h-40 bg-amber-400 rounded-full blur-3xl opacity-30 animate-glow"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <a href="#top" class="flex items-center gap-2">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-tr from-brand-500 to-amber-400 text-xs font-bold shadow-md">
+          GT
+        </span>
+        <span class="font-semibold text-sm sm:text-base tracking-tight">
+          Replit Google Test Auto-Setup
+        </span>
+      </a>
+
+      <div class="hidden sm:flex items-center gap-5 text-xs sm:text-sm">
+        <a href="#features" class="hover:text-amber-300 transition">Features</a>
+        <a href="#install" class="hover:text-amber-300 transition">Install</a>
+        <a href="#cleanup" class="hover:text-amber-300 transition">Cleanup</a>
+        <a href="https://github.com/CodeWithSouma/replit-gtest-setup" target="_blank" class="hover:text-amber-300 transition">GitHub</a>
+
+        <!-- Dark Mode Toggle -->
+        <button id="themeToggle"
+                class="ml-3 px-3 py-1.5 rounded-full border border-white/15 text-xs flex items-center gap-1 hover:bg-white/10 transition">
+          <span id="themeIcon">🌙</span>
+          <span>Toggle</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header id="top" class="w-full pt-14 pb-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-white/10 text-xs sm:text-xs text-slate-200 mb-4 animate-fadeInUp">
+        <span class="text-amber-300">🔥 New</span>
+        <span>One-click Google Test setup for Replit C++</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight drop-shadow-xl tracking-tight animate-fadeInUp">
+        Replit Google Test<br class="hidden sm:block"/>Auto-Setup 🚀
+      </h1>
+
+      <p class="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto animate-fadeInUp" style="animation-delay:0.1s;">
+        A fully automated Google Test + CMake setup for Replit.  
+        No config, no headache—just write tests, hit <span class="font-semibold text-amber-300">Run</span>, and ship better C++ code.
+      </p>
+
+      <div class="mt-7 flex flex-wrap justify-center gap-4 animate-fadeInUp" style="animation-delay:0.2s;">
+        <a href="#install" class="px-7 py-3.5 rounded-xl bg-amber-400 text-slate-950 font-semibold text-sm shadow-lg shadow-amber-500/40 hover:bg-amber-300 transition">
+          ⚡ Install in Replit
+        </a>
+        <a href="https://github.com/CodeWithSouma/replit-gtest-setup" target="_blank"
+           class="px-6 py-3.5 rounded-xl bg-white/5 border border-white/15 text-sm text-slate-100 hover:bg-white/10 transition">
+          ⭐ Star on GitHub
+        </a>
+      </div>
+
+      <!-- Hero sub-card -->
+      <div class="mt-10 max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-2xl px-5 py-4 sm:px-6 sm:py-5 shadow-glass backdrop-blur-md animate-fadeInUp" style="animation-delay:0.3s;">
+        <p class="text-xs sm:text-sm text-slate-200">
+          Includes a <span class="font-semibold text-amber-300">menu-based runner</span>:
+          choose between <span class="font-semibold">Run main_app</span> or <span class="font-semibold">Run GoogleTests</span> directly from the Replit Run button.
+        </p>
+      </div>
     </div>
   </header>
 
-  <!-- How it works -->
-  <section class="section" id="install">
-    <h2>⚡ One Command Installation</h2>
-    <p>Just open your Replit shell and paste this command:</p>
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
 
-    <pre class="code-box"><code>
-bash &lt;(curl -s https://raw.githubusercontent.com/CodeWithSouma/replit-gtest-setup/main/setup_gtest.sh)
-    </code></pre>
+    <!-- FEATURES GRID -->
+    <section id="features" class="mt-6">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-8 text-center">✨ Why This Tool is a Game Changer</h2>
 
-    <p>This will set up:</p>
-    <ul class="feature-list">
-      <li>✔ GoogleTest + CMake auto-install</li>
-      <li>✔ CMake project structure</li>
-      <li>✔ Fancy menu-based RUN button</li>
-      <li>✔ run_main + run_tests shortcuts</li>
-      <li>✔ No configuration required</li>
-    </ul>
-  </section>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">⚡ One Command Setup</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Automatically configures Google Test, CMake, and project structure in a single step.
+          </p>
+        </div>
 
-  <!-- Cleanup -->
-  <section class="section dark">
-    <h2>🧹 Cleanup Command</h2>
-    <p>Want to restore your Replit project to default? Just run:</p>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">🧩 Clean CMake Layout</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Separate executables for <code>main_app</code> and <code>test_runner</code> with shared library code.
+          </p>
+        </div>
 
-    <pre class="code-box"><code>
-bash &lt;(curl -s https://raw.githubusercontent.com/CodeWithSouma/replit-gtest-setup/main/cleanup_gtest.sh)
-    </code></pre>
-  </section>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">🧪 Test Runner Menu</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Menu-driven script: choose to run your app or tests every time you click Run in Replit.
+          </p>
+        </div>
 
-  <!-- Why -->
-  <section class="section">
-    <h2>🚀 Why Use This Tool?</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>No Manual Setup</h3>
-        <p>Everything is installed automatically. No more complicated CMake or GTest configs.</p>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">📁 Organized Project</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Auto-generates <code>src/</code>, <code>tests/</code>, and reusable library code (<code>add_lib</code>).
+          </p>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">🧹 Instant Cleanup</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Cleanup script resets your Replit back to a fresh C++ template with a single command.
+          </p>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-glass backdrop-blur-md">
+          <h3 class="font-semibold mb-1.5 text-sm sm:text-base">🚀 Beginner Friendly</h3>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Perfect for students and professionals learning unit testing and TDD on Replit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTALL SECTION -->
+    <section id="install" class="mt-16">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 flex items-center gap-2">
+        ⚡ One Command Installation
+      </h2>
+      <p class="text-sm sm:text-base text-slate-200 mb-3">
+        Open the <strong>Shell</strong> tab in your Replit C++ project and paste this:
+      </p>
+
+      <div class="bg-black/80 text-emerald-300 px-5 py-4 rounded-xl text-xs sm:text-sm font-mono shadow-glass overflow-x-auto border border-emerald-500/40">
+        bash &lt;(curl -s https://raw.githubusercontent.com/CodeWithSouma/replit-gtest-setup/main/setup_gtest.sh)
       </div>
 
-      <div class="card">
-        <h3>C++ Beginner Friendly</h3>
-        <p>A clean project structure with an example test and main app.</p>
+      <p class="mt-6 text-sm text-slate-300 font-medium">This will automatically:</p>
+      <ul class="mt-2 text-xs sm:text-sm text-slate-300 space-y-1.5">
+        <li>✅ Install Google Test &amp; CMake in Replit</li>
+        <li>✅ Create <code>src/</code> and <code>tests/</code> folders with example files</li>
+        <li>✅ Configure <code>CMakeLists.txt</code> with <code>main_app</code> and <code>test_runner</code></li>
+        <li>✅ Generate <code>run_main.sh</code>, <code>run_tests.sh</code>, and menu-based <code>run_select.sh</code></li>
+        <li>✅ Wire the Replit <strong>Run</strong> button to the interactive menu</li>
+      </ul>
+    </section>
+
+    <!-- CLEANUP SECTION -->
+    <section id="cleanup" class="mt-20">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 flex items-center gap-2">
+        🧹 Cleanup &amp; Restore Default
+      </h2>
+      <p class="text-sm sm:text-base text-slate-200 mb-3">
+        Want to revert your Replit project back to a clean C++ template?
+      </p>
+
+      <div class="bg-slate-900/90 text-sky-300 px-5 py-4 rounded-xl text-xs sm:text-sm font-mono shadow-glass overflow-x-auto border border-sky-500/40">
+        bash &lt;(curl -s https://raw.githubusercontent.com/CodeWithSouma/replit-gtest-setup/main/cleanup_gtest.sh)
       </div>
 
-      <div class="card">
-        <h3>Fully Menu-Driven</h3>
-        <p>Click RUN and choose: Run App or Run Tests. Simple and clean.</p>
+      <p class="mt-5 text-xs sm:text-sm text-slate-300">
+        This will remove all GTest/CMake files, runner scripts, and restore a simple <code>main.cpp</code> with
+        <code>Hello World</code>.
+      </p>
+    </section>
+
+    <!-- DOWNLOAD SECTION -->
+    <section id="download" class="mt-20">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-center">📦 Download &amp; Source Code</h2>
+      <p class="text-sm sm:text-base text-slate-200 text-center mb-6">
+        Prefer to explore the code locally or customize the installer?
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://github.com/CodeWithSouma/replit-gtest-setup" target="_blank"
+           class="px-6 py-3 rounded-xl bg-white/5 border border-white/15 text-sm hover:bg-white/10 transition shadow">
+          🔗 View Repository
+        </a>
+        <a href="https://github.com/CodeWithSouma/replit-gtest-setup/archive/refs/heads/main.zip" target="_blank"
+           class="px-6 py-3 rounded-xl bg-amber-400 text-slate-950 text-sm font-semibold hover:bg-amber-300 transition shadow-lg shadow-amber-500/40">
+          📦 Download as ZIP
+        </a>
       </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-black/80 border-t border-white/10 text-gray-300 py-10 mt-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+      <p class="text-sm sm:text-base font-semibold">Replit Google Test Auto-Setup</p>
+      <p class="text-xs sm:text-sm text-gray-400 mt-1">Built with ❤️ by <a href="https://github.com/CodeWithSouma" target="_blank" class="underline-offset-2 hover:underline">CodeWithSouma</a></p>
+      <p class="text-[11px] text-gray-500 mt-3">Open-source • MIT Licensed • Designed for Replit C++</p>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>Made with ❤️ by <a href="https://github.com/CodeWithSouma" target="_blank">CodeWithSouma</a></p>
   </footer>
+
+  <!-- Dark Mode Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById('themeToggle');
+    const iconSpan = document.getElementById('themeIcon');
+    const root = document.documentElement;
+
+    function updateIcon() {
+      if (root.classList.contains('dark')) {
+        iconSpan.textContent = '🌙';
+      } else {
+        iconSpan.textContent = '☀️';
+      }
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      updateIcon();
+    });
+
+    updateIcon();
+  </script>
 
 </body>
 </html>
-
